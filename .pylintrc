@@ -1,0 +1,4 @@
+[MASTER]
+extension-pkg-whitelist=pydantic
+extension-pkg-whitelist=alembic
+# See pydantic exception: https://github.com/PyCQA/pylint/issues/1524#issuecomment-508934142

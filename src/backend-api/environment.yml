@@ -1,0 +1,8 @@
+name: 5003-project
+channels:
+  - defaults
+dependencies:
+  - python=3.9
+  - jupyter
+  - jupyterlab
+prefix: /Users/user/opt/anaconda3/envs/5003-project

@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  backend-api:
+    container_name: backend-api
+    build:
+      context: ./src/backend-api
+    ports:
+      - "80:80"
+    # volumes:
+    #   - ./src/backend-api/app:/app
+    environment:
+      # DB_HOST: ${DB_HOST}
+      # DB_USER: ${DB_USER}
+      # DB_PASS: ${DB_PASS}
+      # DB_NAME: ${DB_NAME}
+      # DB_PORT: ${DB_PORT}
+      # DB_POOL_SIZE: ${DB_POOL_SIZE}
+      PYTHONPATH: /app/
+      ROOT_DIR: /app/
+  notebook:
+    container_name: notebook
+    build:
+      context: ./src/backend-api
+      dockerfile: Dockerfile-notebook
+    ports:
+      - "8888:8888"
+    environment:
+      PYTHONPATH: /app/

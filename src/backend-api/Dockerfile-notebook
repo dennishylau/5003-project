@@ -1,0 +1,39 @@
+
+# FROM python:3.9
+FROM continuumio/miniconda3:4.10.3p0
+
+ENV BASH_ENV ~/.bashrc
+ENV PYTHONPATH=/app
+
+SHELL ["/bin/bash", "-c"]
+
+COPY environment.yml environment.yml
+COPY requirements.txt requirements.txt
+COPY jupyter_lab_config.py jupyter_lab_config.py
+
+RUN conda init
+RUN conda env create -f environment.yml
+RUN echo "conda activate 5003-project" >> ~/.bashrc
+RUN conda activate 5003-project
+RUN pip install --no-cache -r requirements.txt
+
+WORKDIR /app/
+
+COPY ./app /app
+
+EXPOSE 8888
+
+RUN mkdir /opt/notebooks
+
+# Add Tini. Tini operates as a process subreaper for jupyter. This prevents
+# kernel crashes.
+ENV TINI_VERSION v0.6.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
+RUN chmod +x /usr/bin/tini
+ENTRYPOINT ["/usr/bin/tini", "--"]
+
+# CMD [ "jupyter", "lab", "--notebook-dir=/opt/notebooks", "--config-file=/app/jupyter_notebook_config.py" ]
+
+# CMD ["jupyter", "notebook", "--port=8888", "--no-browser", "--ip=0.0.0.0"]
+
+CMD jupyter-lab --config=/jupyter_lab_config.py
