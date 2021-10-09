@@ -6,3 +6,6 @@
 
 # python
 **/__pycache__/**
+
+# timescaledb local storage 
+src/db-timescale/storage/**

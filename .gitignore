@@ -6,4 +6,8 @@
 
 # python
 **/__pycache__/**
+
+# timescaledb local storage 
+src/db-timescale/storage/**
+!src/db-timescale/storage/README.md
 .env
