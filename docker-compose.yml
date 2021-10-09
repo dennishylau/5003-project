@@ -7,15 +7,13 @@ services:
       context: ./src/backend-api
     ports:
       - "80:80"
-    # volumes:
-    #   - ./src/backend-api/app:/app
     environment:
-      # DB_HOST: ${DB_HOST}
-      # DB_USER: ${DB_USER}
-      # DB_PASS: ${DB_PASS}
-      # DB_NAME: ${DB_NAME}
-      # DB_PORT: ${DB_PORT}
-      # DB_POOL_SIZE: ${DB_POOL_SIZE}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_POOL_SIZE: ${DB_POOL_SIZE}
       PYTHONPATH: /app/
       ROOT_DIR: /app/
   notebook:
@@ -23,6 +21,8 @@ services:
     build:
       context: ./src/backend-api
       dockerfile: Dockerfile-notebook
+    depends_on:
+      - backend-api
     ports:
       - "8888:8888"
     environment:
