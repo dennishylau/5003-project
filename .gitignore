@@ -8,6 +8,10 @@
 **/__pycache__/**
 
 # timescaledb local storage 
-src/db-timescale/storage/**
-!src/db-timescale/storage/README.md
+src/db_timescale/storage/**
+!src/db_timescale/storage/README.md
 .env
+
+# local stuff
+local*.ipynb
+.ipynb_checkpoints

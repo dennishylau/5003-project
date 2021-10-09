@@ -4,7 +4,7 @@ services:
   backend-api:
     container_name: backend-api
     build:
-      context: ./src/backend-api
+      context: ./src/backend_api
     depends_on:
       - db-timescale
     ports:
@@ -21,7 +21,7 @@ services:
   notebook:
     container_name: notebook
     build:
-      context: ./src/backend-api
+      context: ./src/backend_api
       dockerfile: Dockerfile-notebook
     depends_on:
       - backend-api
@@ -41,4 +41,4 @@ services:
       POSTGRES_PASSWORD: ${DB_PASS}
       POSTGRES_DB: ${DB_NAME}
     volumes:
-      - ./src/db-timescale/storage:/var/lib/postgresql/data
+      - ./src/db_timescale/storage:/var/lib/postgresql/data

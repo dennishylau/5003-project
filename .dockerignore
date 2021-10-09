@@ -8,4 +8,4 @@
 **/__pycache__/**
 
 # timescaledb local storage 
-src/db-timescale/storage/**
+src/db_timescale/storage/**
