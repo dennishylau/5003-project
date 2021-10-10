@@ -1,0 +1,23 @@
+#!/bin/bash
+
+source ~/.bashrc
+
+CONDA_BASE=$(conda info --base)
+source "$CONDA_BASE/etc/profile.d/conda.sh"
+conda activate 5003-project
+
+pip list --format=freeze | diff requirements.txt - > /dev/null
+if [ $? != 0 ]
+then
+    echo "Missing python module dependencies in requirements.txt. Run 'pip list --format=freeze > requirements.txt' to update."
+    exit 1
+fi
+
+conda env export --no-builds --from-history | diff environment.yml - > /dev/null
+if [ $? != 0 ]
+then
+    echo "Missing conda module dependencies in environment.yml. Run 'conda env export --no-builds --from-history > environment.yml' to update."
+    exit 1
+fi
+
+exit 0

@@ -71,6 +71,7 @@ Interactive shell for debugging: `docker compose up && docker-compose run backen
 ### Git Hooks
 
 - Set this up so no need to manually run `conda env export` and `pip freeze`
+- Ensure `conda` is automatically sourced in `~/.bashrc`
 - Run `git config core.hooksPath githooks` to modify the default hooks directory
 - Run `chmod +x githooks/*` to make the scripts executable
 
