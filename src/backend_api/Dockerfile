@@ -7,24 +7,34 @@ ENV PYTHONPATH=/app
 
 SHELL ["/bin/bash", "-c"]
 
+# install java
+RUN mkdir -p /usr/share/man/man1
+RUN apt-get update && \
+    apt-get install -y openjdk-11-jre-headless && \
+    apt-get clean;
+ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64
+# install scala
+RUN wget https://downloads.lightbend.com/scala/2.12.3/scala-2.12.3.deb
+RUN dpkg -i scala-2.12.3.deb
+# install via conda
 COPY environment.yml environment.yml
-COPY requirements.txt requirements.txt
-COPY src/backend_api/gunicorn.conf.py gunicorn.conf.py
-COPY src/backend_api/start.sh start.sh
-COPY src/backend_api/start-reload.sh start-reload.sh
-
 RUN conda init
 RUN conda env create -f environment.yml
 RUN echo "conda activate 5003-project" >> ~/.bashrc
 RUN conda activate 5003-project
+# install via pip
+COPY requirements.txt requirements.txt
 RUN pip install --no-cache -r requirements.txt
+# copy local files
+COPY src/backend_api/gunicorn.conf.py gunicorn.conf.py
+COPY src/backend_api/start.sh start.sh
+RUN chmod +x /start.sh
+COPY src/backend_api/start-reload.sh start-reload.sh
+RUN chmod +x /start-reload.sh
 
 WORKDIR /app/
 
 COPY src/backend_api/app /app
-
-RUN chmod +x /start.sh
-RUN chmod +x /start-reload.sh
 
 EXPOSE 80
 

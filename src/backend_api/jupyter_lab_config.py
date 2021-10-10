@@ -859,7 +859,7 @@ c.ServerApp.ip = '*'
 #                        The string should be of the form type:salt:hashed-
 #  password.
 #  Default: ''
-c.ServerApp.password = 'sha1:5bc3961e10f1:f8789cfc7e379dca68bfee36596411aa238e9de2'
+# c.ServerApp.password = 'sha1:5bc3961e10f1:f8789cfc7e379dca68bfee36596411aa238e9de2'
 
 # Forces users to use a password for the Jupyter server.
 #                        This is useful in a multi user environment, for instance when
@@ -868,7 +868,7 @@ c.ServerApp.password = 'sha1:5bc3961e10f1:f8789cfc7e379dca68bfee36596411aa238e9d
 #                        In such a case, serving on localhost is not secure since
 #                        any user can connect to the Jupyter server via ssh.
 #  Default: False
-c.ServerApp.password_required = True
+# c.ServerApp.password_required = True
 
 # The port the Jupyter server will listen on.
 #  Default: 8888
@@ -947,7 +947,7 @@ c.ServerApp.root_dir = '/opt/notebooks'
 #          Setting to an empty string disables authentication altogether, which
 #  is NOT RECOMMENDED.
 #  Default: '<generated>'
-# c.ServerApp.token = '<generated>'
+c.ServerApp.token = '5003-project'
 
 # Supply overrides for the tornado.web.Application that the Jupyter server uses.
 #  Default: {}

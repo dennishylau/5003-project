@@ -7,15 +7,31 @@ ENV PYTHONPATH=/app
 
 SHELL ["/bin/bash", "-c"]
 
+# install java
+RUN mkdir -p /usr/share/man/man1
+RUN apt-get update && \
+    apt-get install -y openjdk-11-jre-headless && \
+    apt-get clean;
+ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64
+# install scala
+RUN wget https://downloads.lightbend.com/scala/2.12.3/scala-2.12.3.deb
+RUN dpkg -i scala-2.12.3.deb
+# Add Tini. Tini operates as a process subreaper for jupyter. This prevents kernel crashes.
+ENV TINI_VERSION v0.6.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
+RUN chmod +x /usr/bin/tini
+# install via conda
 COPY environment.yml environment.yml
-COPY requirements.txt requirements.txt
-COPY src/backend_api/jupyter_lab_config.py jupyter_lab_config.py
-
 RUN conda init
 RUN conda env create -f environment.yml
 RUN echo "conda activate 5003-project" >> ~/.bashrc
 RUN conda activate 5003-project
+# install via pip
+COPY requirements.txt requirements.txt
 RUN pip install --no-cache -r requirements.txt
+# jupyter notebook dir and config
+RUN mkdir /opt/notebooks
+COPY src/backend_api/jupyter_lab_config.py jupyter_lab_config.py
 
 WORKDIR /app/
 
@@ -23,17 +39,6 @@ COPY src/backend_api/app /app
 
 EXPOSE 8888
 
-RUN mkdir /opt/notebooks
-
-# Add Tini. Tini operates as a process subreaper for jupyter. This prevents
-# kernel crashes.
-ENV TINI_VERSION v0.6.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
-RUN chmod +x /usr/bin/tini
 ENTRYPOINT ["/usr/bin/tini", "--"]
-
-# CMD [ "jupyter", "lab", "--notebook-dir=/opt/notebooks", "--config-file=/app/jupyter_notebook_config.py" ]
-
-# CMD ["jupyter", "notebook", "--port=8888", "--no-browser", "--ip=0.0.0.0"]
 
 CMD jupyter-lab --config=/jupyter_lab_config.py

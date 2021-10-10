@@ -27,10 +27,13 @@ services:
     depends_on:
       - backend-api
       - db-timescale
+      - spark-master
     ports:
       - "8888:8888"
     environment:
       PYTHONPATH: /app/
+    volumes:
+      - ./notebook:/opt/notebooks
   db-timescale:
     container_name: db-timescale
     image: timescale/timescaledb:latest-pg12
@@ -43,3 +46,84 @@ services:
       POSTGRES_DB: ${DB_NAME}
     volumes:
       - ./src/db_timescale/storage:/var/lib/postgresql/data
+  # spark
+  spark-master:
+    image: bitnami/spark:3.1.2
+    container_name: spark-master
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+    environment:
+      - HOSTNAME=spark-master
+      - SPARK_MODE=master
+      - SPARK_LOCAL_IP=0.0.0.0
+      # - SPARK_WORKER_CORES=2
+      # - SPARK_WORKER_MEMORY=500m
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+      # - JAVA_HOME: /opt/bitnami/java
+      # - SPARK_HOME: /opt/bitnami/spark
+      # volumes:
+      # - ./src/backend_pipeline/spark/storage:
+    ports:
+      - '8080:8080'
+      - '7077:7077'
+  spark-worker-1:
+    image: bitnami/spark:3.1.2
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      # - SPARK_WORKER_MEMORY=4G
+      # - SPARK_WORKER_CORES=2
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+  # spark-worker-2:
+  #   image: bitnami/spark:3.1.2
+  #   environment:
+  #     - SPARK_MODE=worker
+  #     - SPARK_MASTER_URL=spark://spark:7077
+  #     - SPARK_WORKER_MEMORY=1G
+  #     - SPARK_WORKER_CORES=1
+  #     - SPARK_RPC_AUTHENTICATION_ENABLED=no
+  #     - SPARK_RPC_ENCRYPTION_ENABLED=no
+  #     - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+  #     - SPARK_SSL_ENABLED=no
+    # volumes:
+    #   - ./src/backend_pipeline/spark/storage:/usr
+      # - INIT_DAEMON_STEP=setup_spark
+  # spark-master:
+  #   image: bde2020/spark-master:3.1.1-hadoop3.2
+  #   container_name: spark-master
+  #   ports:
+  #     - "8080:8080"
+  #     - "7077:7077"
+  #   environment:
+  #     - INIT_DAEMON_STEP=setup_spark
+  #     - SPARK_LOCAL_IP=0.0.0.0
+  # spark-worker-1:
+  #   image: bde2020/spark-worker:3.1.1-hadoop3.2
+  #   container_name: spark-worker-1
+  #   depends_on:
+  #     - spark-master
+  #   ports:
+  #     - "8081:8081"
+  #   environment:
+  #     - "SPARK_MASTER=spark://spark-master:7077"
+  #     - SPARK_LOCAL_IP=0.0.0.0
+  #   mem_limit: 500m
+  # spark-worker-2:
+  #   image: bde2020/spark-worker:3.1.1-hadoop3.2
+  #   container_name: spark-worker-2
+  #   depends_on:
+  #     - spark-master
+  #   ports:
+  #     - "8082:8081"
+  #   environment:
+  #     - "SPARK_MASTER=spark://spark-master:7077"
+  #     - SPARK_LOCAL_IP=0.0.0.0
+  #   mem_limit: 500m
+

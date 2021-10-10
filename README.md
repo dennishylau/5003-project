@@ -21,6 +21,10 @@
 
 - Python version: 3.9  
 - Code formatter: autopep8
+- Spark: 3.1.2
+  - Hadoop: 3.2.0
+  - Scala: 2.12
+  - py4j: 0.10.9
 
 ### Prerequisite
 
@@ -58,7 +62,7 @@ Export pip package list: `pip list --format=freeze > requirements.txt`
 Running in local: `docker compose up`
 
 - Docs at [http://127.0.0.1:80/latest/docs](http://127.0.0.1:80/latest/docs)  
-- Notebook at [http://localhost:8888/](http://localhost:8888/)  
+- Notebook at [http://localhost:8888/lab?token=5003-project](http://localhost:8888/lab?token=5003-project)  
 - TimescaleDB at `localhost:5432`  
 
 See list of credentials below.  
