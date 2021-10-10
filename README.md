@@ -8,6 +8,7 @@
   - [Managing Conda Environment](#managing-conda-environment)
   - [Start Dev Servers](#start-dev-servers)
   - [Docker Compose](#docker-compose)
+  - [Example Files](#example-files)
   - [Additional Setup](#additional-setup)
     - [Git Hooks](#git-hooks)
     - [Pytest](#pytest)
@@ -42,10 +43,10 @@
 
 ## Managing Conda Environment
 
-Install: `conda env create -f environment.yml`  
-Activate: `conda activate 5003-project`  
-Export conda package list: `conda env export --no-builds --from-history > environment.yml`  
-Export pip package list: `pip list --format=freeze > requirements.txt`  
+- Install: `conda env create -f environment.yml`  
+- Activate: `conda activate 5003-project`  
+- Export conda package list: `conda env export --no-builds --from-history > environment.yml`  
+- Export pip package list: `pip list --format=freeze > requirements.txt`  
 
 ## Start Dev Servers  
 
@@ -59,16 +60,19 @@ Export pip package list: `pip list --format=freeze > requirements.txt`
 
 ## Docker Compose
 
-Running in local: `docker compose up`
+- Running in local: `docker compose up`  
+  - API Docs: [http://localhost:80/latest/docs](http://localhost:80/latest/docs)  
+  - Notebook: [http://localhost:8888/lab?token=5003-project](http://localhost:8888/lab?token=5003-project)  
+  - TimescaleDB: `localhost:5432`  
+  - Spark master node (Pyspark endpoint): `localhost:7077`  
+  - Spark master node (WebUI): [http://localhost:8080/](http://localhost:8080/)  
 
-- Docs at [http://127.0.0.1:80/latest/docs](http://127.0.0.1:80/latest/docs)  
-- Notebook at [http://localhost:8888/lab?token=5003-project](http://localhost:8888/lab?token=5003-project)  
-- TimescaleDB at `localhost:5432`  
+- Running in local with rebuild: `docker compose up --build`  
+- Interactive shell for debugging: `docker compose up && docker-compose run backend-api sh`
 
-See list of credentials below.  
+## Example Files
 
-Running in local with rebuild: `docker compose up --build`  
-Interactive shell for debugging: `docker compose up && docker-compose run backend-api sh`
+Example notebooks can be found in the `notebook` directory
 
 ## Additional Setup
 
@@ -87,7 +91,7 @@ Interactive shell for debugging: `docker compose up && docker-compose run backen
 
 ### Notebook
 
-- Password: 5003-project
+- Token: 5003-project
 
 ### TimescaleDB
 
