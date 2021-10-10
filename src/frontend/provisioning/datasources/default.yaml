@@ -1,0 +1,15 @@
+apiVersion: 1
+
+datasources:
+  - name: Timescale
+    type: postgres
+    url: http://$DB_HOST:$DB_PORT
+    database: $DB_NAME
+    user: $DB_USER
+    jsonData:
+      postgresVersion: 1200
+      timescaledb: true
+    secureJsonData:
+      password: $DB_PASS
+    version: 1
+    editable: true

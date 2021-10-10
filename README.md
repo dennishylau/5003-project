@@ -15,6 +15,7 @@
   - [Credentials](#credentials)
     - [Notebook](#notebook)
     - [TimescaleDB](#timescaledb)
+  - [Additional Docs](#additional-docs)
 
 ## Getting Started
 
@@ -66,6 +67,7 @@
   - TimescaleDB: `localhost:5432`  
   - Spark master node (Pyspark endpoint): `localhost:7077`  
   - Spark master node (WebUI): [http://localhost:8080/](http://localhost:8080/)  
+  - Grafana: [http://localhost:3000/](http://localhost:3000/)  
 
 - Running in local with rebuild: `docker compose up --build`  
 - Interactive shell for debugging: `docker compose up && docker-compose run backend-api sh`
@@ -96,5 +98,9 @@ Example notebooks can be found in the `notebook` directory
 ### TimescaleDB
 
 - DB Name: 5003-project-dev  
-- Username: 5003-project  
+- Username: postgres  
 - Password: 5003-project  
+
+## Additional Docs
+
+- Grafana provisioning: <https://grafana.com/tutorials/provision-dashboards-and-data-sources/>
