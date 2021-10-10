@@ -4,7 +4,8 @@ services:
   backend-api:
     container_name: backend-api
     build:
-      context: ./src/backend_api
+      context: .
+      dockerfile: ./src/backend_api/Dockerfile
     depends_on:
       - db-timescale
     ports:
@@ -21,8 +22,8 @@ services:
   notebook:
     container_name: notebook
     build:
-      context: ./src/backend_api
-      dockerfile: Dockerfile-notebook
+      context: .
+      dockerfile: ./src/backend_api/Dockerfile-notebook
     depends_on:
       - backend-api
       - db-timescale

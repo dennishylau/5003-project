@@ -4,7 +4,8 @@ services:
   backend-api:
     container_name: backend-api
     build:
-      context: ./src/backend_api
+      context: .
+      dockerfile: ./src/backend_api/Dockerfile
     ports:
       - "80:80"
     environment:
@@ -19,8 +20,8 @@ services:
   notebook:
     container_name: notebook
     build:
-      context: ./src/backend_api
-      dockerfile: Dockerfile-notebook
+      context: .
+      dockerfile: ./src/backend_api/Dockerfile-notebook
     depends_on:
       - backend-api
     ports:

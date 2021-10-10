@@ -9,9 +9,9 @@ SHELL ["/bin/bash", "-c"]
 
 COPY environment.yml environment.yml
 COPY requirements.txt requirements.txt
-COPY gunicorn.conf.py gunicorn.conf.py
-COPY start.sh start.sh
-COPY start-reload.sh start-reload.sh
+COPY src/backend_api/gunicorn.conf.py gunicorn.conf.py
+COPY src/backend_api/start.sh start.sh
+COPY src/backend_api/start-reload.sh start-reload.sh
 
 RUN conda init
 RUN conda env create -f environment.yml
@@ -21,7 +21,7 @@ RUN pip install --no-cache -r requirements.txt
 
 WORKDIR /app/
 
-COPY ./app /app
+COPY src/backend_api/app /app
 
 RUN chmod +x /start.sh
 RUN chmod +x /start-reload.sh
