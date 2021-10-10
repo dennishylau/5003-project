@@ -28,7 +28,7 @@ Export pip package list: `pip list --format=freeze > requirements.txt`
 
 ## Docker Compose
 
-Running in local: `docker compose -f docker-compose.local.yml up`
+Running in local: `docker compose up`
 
 - Docs at [http://127.0.0.1:80/latest/docs](http://127.0.0.1:80/latest/docs)  
 - Notebook at [http://localhost:8888/](http://localhost:8888/)  
@@ -36,8 +36,8 @@ Running in local: `docker compose -f docker-compose.local.yml up`
 
 See list of credentials below.  
 
-Running in local with rebuild: `docker compose -f docker-compose.local.yml up --build`  
-Interactive shell for debugging: `docker compose -f docker-compose.local.yml up && docker-compose run backend-api sh`
+Running in local with rebuild: `docker compose up --build`  
+Interactive shell for debugging: `docker compose up && docker-compose run backend-api sh`
 
 ## Additional Setup
 
