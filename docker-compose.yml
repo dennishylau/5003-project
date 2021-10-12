@@ -41,11 +41,17 @@ services:
     ports:
       - "5432:5432"
     environment:
+      PGUSER: ${DB_USER}  # for health check
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}
       POSTGRES_DB: ${DB_NAME}
     volumes:
       - ./src/db_timescale/storage:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   # spark
   spark-master:
     build:
@@ -88,7 +94,8 @@ services:
     container_name: frontend
     image: grafana/grafana:latest
     depends_on:
-        - db-timescale
+      db-timescale:
+        condition: service_healthy
     ports:
         - 3000:3000
     volumes:
@@ -96,7 +103,6 @@ services:
         - ./src/frontend/config:/etc/grafana/
         - ./src/frontend/log:/var/log/grafana
         - ./src/frontend/provisioning:/etc/grafana/provisioning
-        - ./src/frontend/plugins:/var/lib/grafana/plugins
     environment:
       # grafana internal vars
       GF_DATABASE_TYPE: postgres
