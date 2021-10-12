@@ -21,7 +21,7 @@
 
 ### Env Info
 
-- Python version: 3.9  
+- Python version: 3.9.7  
 - Code formatter: autopep8
 - Spark: 3.1.2
   - Hadoop: 3.2.0
