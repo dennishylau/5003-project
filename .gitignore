@@ -10,8 +10,22 @@
 # timescaledb local storage 
 src/db_timescale/storage/**
 !src/db_timescale/storage/README.md
+
+# env
 .env
 
 # local stuff
 local*.ipynb
 .ipynb_checkpoints
+
+# large files
+notebook/data/hashtag_donaldtrump.csv
+notebook/data/hashtag_joebiden.csv
+
+# kafka
+src/backend_pipeline/kafka/data/**
+!src/backend_pipeline/kafka/data/README.md
+
+# zookeeper
+src/backend_pipeline/zookeeper/storage/**
+!src/backend_pipeline/zookeeper/storage/README.md
