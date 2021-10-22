@@ -40,7 +40,8 @@
 1. `cd 5003-project`
 2. Duplicate `.env.example` and rename it to `.env`, update the credentials inside if needed  
 (Tip: if you can't find the file, try opening the folder with an IDE)
-3. Run `docker compose up`
+3. Run `docker compose pull`
+4. Run `docker compose up`
 
 ## Managing Conda Environment
 
