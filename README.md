@@ -38,11 +38,13 @@
 
 ### Steps
 
-1. `cd 5003-project`
+1. Git clone and `cd 5003-project`.
 2. Duplicate `.env.example` and rename it to `.env`, update the credentials inside if needed  
 (Tip: if you can't find the file, try opening the folder with an IDE)
-3. Run `docker compose pull`
-4. Run `docker compose up`
+3. Run `export $(xargs <.env)` to source the env. Ignore errors such as `export: not valid in this context`.
+4. On Git, note the docker:x.x.x version number. Run `export version=x.x.x`.
+5. Run `docker compose pull`
+6. Run `docker compose up`
 
 ## Managing Conda Environment
 
