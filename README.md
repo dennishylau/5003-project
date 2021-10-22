@@ -16,6 +16,7 @@
     - [Notebook](#notebook)
     - [TimescaleDB](#timescaledb)
   - [Additional Docs](#additional-docs)
+  - [Troubleshoot](#troubleshoot)
 
 ## Getting Started
 
@@ -104,3 +105,8 @@ Example notebooks can be found in the `notebook` directory
 ## Additional Docs
 
 - Grafana provisioning: <https://grafana.com/tutorials/provision-dashboards-and-data-sources/>
+
+## Troubleshoot
+
+- Question: Kafka starts up then shuts itself down. Error: `kafka.common.InconsistentClusterIdException: The Cluster ID 5vrop5dzTsiNCFnHoSZ1TQ doesn't match stored clusterId Some(IFalA7xARAedQH2YNakCyg) in meta.properties. The broker is trying to join the wrong cluster. Configured zookeeper.connect may be wrong.`
+  - Answer: go to `src/backend_pipeline/kafka/data/meta.properties` and update the `cluster.id`
