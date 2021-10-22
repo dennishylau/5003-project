@@ -56,7 +56,8 @@ services:
   # spark
   spark-master:
     build:
-      context: ./src/backend_pipeline/spark/
+      context: .
+      dockerfile: ./src/backend_pipeline/spark/Dockerfile
     container_name: spark-master
     ports:
       - "8080:8080"
@@ -80,7 +81,8 @@ services:
       - '7077:7077'
   spark-worker-1:
     build:
-      context: ./src/backend_pipeline/spark/
+      context: .
+      dockerfile: ./src/backend_pipeline/spark/Dockerfile
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
