@@ -1,3 +1,4 @@
+aiokafka==0.7.2
 anyio==3.3.2
 appnope==0.1.2
 argon2-cffi==20.1.0
@@ -46,6 +47,7 @@ jupyterlab==3.1.7
 jupyterlab-pygments==0.1.2
 jupyterlab-server==2.8.2
 jupyterlab-widgets==1.0.0
+kafka-python==2.0.2
 MarkupSafe==2.0.1
 matplotlib-inline==0.1.2
 mistune==0.8.4
