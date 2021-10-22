@@ -46,9 +46,7 @@
 
 - Create conda environment with packages: `conda env create -f environment.yml`  
 - Activate conda environment: `conda activate 5003-project`  
-- Install pip packages: `pip install -r requirements.txt`
 - Export conda package list: `conda env export --no-builds --from-history > environment.yml`  
-- Export pip package list: `pip list --format=freeze > requirements.txt`  
 
 ## Start Dev Servers  
 
