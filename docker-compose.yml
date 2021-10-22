@@ -32,6 +32,12 @@ services:
     ports:
       - "8888:8888"
     environment:
+      DB_HOST: db-timescale
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_POOL_SIZE: ${DB_POOL_SIZE}
       PYTHONPATH: /app/
     volumes:
       - ./notebook:/opt/notebooks
@@ -63,17 +69,23 @@ services:
       - "8080:8080"
       - "7077:7077"
     environment:
-      - HOSTNAME=spark-master
-      - SPARK_MODE=master
-      - SPARK_LOCAL_IP=0.0.0.0
+      HOSTNAME: spark-master
+      SPARK_MODE: master
+      SPARK_LOCAL_IP: 0.0.0.0
       # - SPARK_WORKER_CORES=2
       # - SPARK_WORKER_MEMORY=500m
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-      - SPARK_SSL_ENABLED=no
+      SPARK_RPC_AUTHENTICATION_ENABLED: no
+      SPARK_RPC_ENCRYPTION_ENABLED: no
+      SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED: no
+      SPARK_SSL_ENABLED: no
       # - JAVA_HOME: /opt/bitnami/java
       # - SPARK_HOME: /opt/bitnami/spark
+      DB_HOST: db-timescale
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_POOL_SIZE: ${DB_POOL_SIZE}
     volumes:
       - ./notebook:/opt/notebooks
     ports:
@@ -84,12 +96,18 @@ services:
       context: .
       dockerfile: ./src/backend_pipeline/spark/Dockerfile
     environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark-master:7077
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-      - SPARK_SSL_ENABLED=no
+      SPARK_MODE: worker
+      SPARK_MASTER_URL: spark://spark-master:7077
+      SPARK_RPC_AUTHENTICATION_ENABLED: no
+      SPARK_RPC_ENCRYPTION_ENABLED: no
+      SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED: no
+      SPARK_SSL_ENABLED: no
+      DB_HOST: db-timescale
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_POOL_SIZE: ${DB_POOL_SIZE}
     volumes:
       - ./notebook:/opt/notebooks
   # grafana
