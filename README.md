@@ -16,6 +16,7 @@
     - [Notebook](#notebook)
     - [TimescaleDB](#timescaledb)
   - [Additional Docs](#additional-docs)
+  - [Troubleshoot](#troubleshoot)
 
 ## Getting Started
 
@@ -37,18 +38,19 @@
 
 ### Steps
 
-1. `cd 5003-project`
+1. Git clone and `cd 5003-project`.
 2. Duplicate `.env.example` and rename it to `.env`, update the credentials inside if needed  
 (Tip: if you can't find the file, try opening the folder with an IDE)
-3. Run `docker compose up`
+3. Run `export $(xargs <.env)` to source the env. Ignore errors such as `export: not valid in this context`.
+4. On Git, note the docker:x.x.x version number. Run `export version=x.x.x`.
+5. Run `docker compose pull`
+6. Run `docker compose up`
 
 ## Managing Conda Environment
 
 - Create conda environment with packages: `conda env create -f environment.yml`  
 - Activate conda environment: `conda activate 5003-project`  
-- Install pip packages: `pip install -r requirements.txt`
 - Export conda package list: `conda env export --no-builds --from-history > environment.yml`  
-- Export pip package list: `pip list --format=freeze > requirements.txt`  
 
 ## Start Dev Servers  
 
@@ -105,3 +107,8 @@ Example notebooks can be found in the `notebook` directory
 ## Additional Docs
 
 - Grafana provisioning: <https://grafana.com/tutorials/provision-dashboards-and-data-sources/>
+
+## Troubleshoot
+
+- Question: Kafka starts up then shuts itself down. Error: `kafka.common.InconsistentClusterIdException: The Cluster ID 5vrop5dzTsiNCFnHoSZ1TQ doesn't match stored clusterId Some(IFalA7xARAedQH2YNakCyg) in meta.properties. The broker is trying to join the wrong cluster. Configured zookeeper.connect may be wrong.`
+  - Answer: go to `src/backend_pipeline/kafka/data/meta.properties` and update the `cluster.id`

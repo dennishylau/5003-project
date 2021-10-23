@@ -3,7 +3,17 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.9
+  - python=3.9.7
   - jupyter
   - jupyterlab
+  - pip
+  - pyspark=3.1.2
+  - asyncpg
+  - sqlmodel
+  - pandas
+  - numpy
+  - py4j=0.10.9
+  - psycopg2-binary
+  - sqlalchemy
+  - aiokafka
 prefix: /Users/user/opt/anaconda3/envs/5003-project
