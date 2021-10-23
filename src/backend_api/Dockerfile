@@ -22,6 +22,9 @@ RUN conda init
 RUN conda env create -f environment.yml
 RUN echo "conda activate 5003-project" >> ~/.bashrc
 RUN conda activate 5003-project
+# install via pip
+COPY requirements.txt requirements.txt
+RUN pip install --no-cache -r requirements.txt
 # copy local files
 COPY src/backend_api/gunicorn.conf.py gunicorn.conf.py
 COPY src/backend_api/start.sh start.sh
