@@ -36,10 +36,11 @@ services:
       POSTGRES_DB: ${DB_NAME}
     volumes:
       - ./src/db_timescale/storage:/var/lib/postgresql/data
+      - ./src/db_timescale/init:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
-      interval: 10s
-      timeout: 5s
+      interval: 15s
+      timeout: 30s
       retries: 5
   # spark
   spark-master:
@@ -135,13 +136,19 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     volumes:
       - ./src/backend_pipeline/zookeeper/storage:/var/lib/zookeeper/
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo ruok | nc localhost 2181 | grep imok"]
+      interval: 15s
+      timeout: 30s
+      retries: 5
 
   kafka-broker:
     image: confluentinc/cp-kafka:6.2.1
     hostname: broker
     container_name: kafka-broker
     depends_on:
-      - kafka-zookeeper
+      kafka-zookeeper:
+        condition: service_healthy
     ports:
       - "29092:29092"
     environment:
@@ -158,7 +165,7 @@ services:
       - ./src/backend_pipeline/kafka/data:/var/lib/kafka/data
     healthcheck:
       test: ["CMD", "kafka-topics", "--list", "--bootstrap-server", "broker:9092"]
-      interval: 30s
+      interval: 15s
       timeout: 30s
       retries: 5
 
