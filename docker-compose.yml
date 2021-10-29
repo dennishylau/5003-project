@@ -21,6 +21,8 @@ services:
       DB_PASS: ${DB_PASS}
       DB_POOL_SIZE: ${DB_POOL_SIZE}
       PYTHONPATH: /app/
+      PYSPARK_PYTHON: python3.9
+      PYSPARK_DRIVER_PYTHON: python3.9
     volumes:
       - ./notebook:/opt/notebooks
   db-timescale:
