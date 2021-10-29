@@ -138,7 +138,7 @@ services:
     volumes:
       - ./src/backend_pipeline/zookeeper/storage:/var/lib/zookeeper/
     healthcheck:
-      test: ["CMD", "bash", "-c", "echo ruok | nc localhost 2181 | grep imok"]
+      test: ["CMD", "bash", "-c", "echo srvr | nc localhost 2181 | grep Mode"]
       interval: 15s
       timeout: 30s
       retries: 5
