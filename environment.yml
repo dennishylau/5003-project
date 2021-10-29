@@ -4,16 +4,16 @@ channels:
   - defaults
 dependencies:
   - python=3.9.7
-  - jupyter
-  - jupyterlab
+  - jupyter=1.0.0
+  - jupyterlab=3.1.7
   - pip
   - pyspark=3.1.2
-  - asyncpg
-  - sqlmodel
-  - pandas
-  - numpy
+  - asyncpg=0.24.0
+  - sqlmodel=0.0.4
+  - pandas=1.3.4
+  - numpy=1.21.3
   - py4j=0.10.9
-  - psycopg2-binary
-  - sqlalchemy
-  - aiokafka
+  - psycopg2-binary=2.9.1
+  - sqlalchemy=1.4.26
+  - aiokafka=0.7.2
 prefix: /Users/user/opt/anaconda3/envs/5003-project
