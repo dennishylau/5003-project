@@ -50,7 +50,7 @@ services:
     build:
       context: .
       dockerfile: ./src/backend_pipeline/spark/Dockerfile
-    image: dennishylau/5003-project-spark:${version:-latest}
+    image: thomastf/5003-project-spark:${version:-latest}
     container_name: spark-master
     ports:
       - "8080:8080"
@@ -82,7 +82,7 @@ services:
     build:
       context: .
       dockerfile: ./src/backend_pipeline/spark/Dockerfile
-    image: dennishylau/5003-project-spark:${version:-latest}
+    image: thomastf/5003-project-spark:${version:-latest}
     environment:
       SPARK_MODE: worker
       SPARK_MASTER_URL: spark://spark-master:7077
