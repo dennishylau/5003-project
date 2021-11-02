@@ -1,0 +1,37 @@
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+{
+  "manifestVersion": "2.0.0",
+  "signatureType": "grafana",
+  "signedByOrg": "grafana",
+  "signedByOrgName": "Grafana Labs",
+  "plugin": "grafana-singlestat-panel",
+  "version": "1.0.0",
+  "time": 1623093414807,
+  "keyId": "7e4d0c6a708866e7",
+  "files": {
+    "img/icn-singlestat-panel.svg": "4ef1219072356f9254c9ef75711c946be1d5fd77598304c598fdc318a1e83110",
+    "README.md": "3dadca218640a3bcca23b8e81124ce517ca96684206448b51b9b5b209d29d012",
+    "CHANGELOG.md": "676a37bf194e699555047bf458e02fa8e3d62e8c1d1bad883e1d5306c4fb3909",
+    "module.js.map": "fa8e0a67e5d7e56201dfe8061dad02c2a79083db9387035bf09114fbd3c1fc8c",
+    "module.js.LICENSE.txt": "0d8f66cd4afb566cb5b7e1540c68f43b939d3eba12ace290f18abc4f4cb53ed0",
+    "editor.html": "c17b0192234dad4f5d1d71abae02ded8f1d7ac9e406fc3a9a988d80cae976001",
+    "module.html": "0d877c399bbfa2208d6b2dbbdb81f81a32d99c7374d52cc4f0b97fc2930f735b",
+    "plugin.json": "c5d806eacb2ab19f01b4156556308942bd2cb07c1a48b22bc6ec37b1572c90b6",
+    "mappings.html": "d9b41d25a8a29ac40f04a4eb4bc77d44ec8e4b6b5e768e7f21e703e7b7e7e7bd",
+    "module.js": "6670aa57e9667ddd381cea232cff4c066862552bdf59e760e89f302e64a99535",
+    "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+  }
+}
+-----BEGIN PGP SIGNATURE-----
+Version: OpenPGP.js v4.10.1
+Comment: https://openpgpjs.org
+
+wqAEARMKAAYFAmC+cKYACgkQfk0ManCIZucAhwIHcQJ4hDyri0bHOahJ5Rtm
+X8B/P9oU3OOdk7AL2iHFHne4w47Q2m7a3st/niTBeTg5mQbOqixV5gj/h7Kh
+BaSxObMCB2SbdI25oDYsoltoc5Zjs/vzn6bK06B09/oFJohkXs1eGxa9Anfb
+IPGAtKw/sj/8pG/+QXUVDo/tlrO5K3KB212/
+=4TS1
+-----END PGP SIGNATURE-----
