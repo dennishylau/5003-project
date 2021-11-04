@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: ./src/backend_api/Dockerfile-notebook
-    image: dennishylau/5003-project-notebook:${version:-latest}
+    image: dennishylau/5003-project-notebook:0.0.1
     depends_on:
       - db-timescale
       - spark-master
@@ -29,7 +29,7 @@ services:
     container_name: db-timescale
     build:
       context: ./src/db_timescale/
-    image: dennishylau/5003-project-db-timescale:${version:-latest}
+    image: dennishylau/5003-project-db-timescale:0.0.1
     restart: always
     ports:
       - "5432:5432"
@@ -50,7 +50,7 @@ services:
     build:
       context: .
       dockerfile: ./src/backend_pipeline/spark/Dockerfile
-    image: dennishylau/5003-project-spark:${version:-latest}
+    image: dennishylau/5003-project-spark:0.0.1
     container_name: spark-master
     ports:
       - "8080:8080"
@@ -82,7 +82,7 @@ services:
     build:
       context: .
       dockerfile: ./src/backend_pipeline/spark/Dockerfile
-    image: dennishylau/5003-project-spark:${version:-latest}
+    image: dennishylau/5003-project-spark:0.0.1
     environment:
       SPARK_MODE: worker
       SPARK_MASTER_URL: spark://spark-master:7077
