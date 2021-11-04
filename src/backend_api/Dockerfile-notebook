@@ -1,6 +1,6 @@
 
 # FROM python:3.9
-FROM continuumio/miniconda3:4.10.3p0
+FROM --platform=$BUILDPLATFORM continuumio/miniconda3:4.10.3p0
 
 ENV BASH_ENV ~/.bashrc
 ENV PYTHONPATH=/app
@@ -11,21 +11,28 @@ SHELL ["/bin/bash", "-c"]
 RUN mkdir -p /usr/share/man/man1
 RUN apt-get update && \
     apt-get install -y openjdk-11-jre-headless && \
+    apt-get install -y cmake build-essential libssl-dev tini && \
     apt-get clean;
-ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64
+
+# support arm build
+ARG TARGETPLATFORM
+RUN case ${TARGETPLATFORM} in \
+    "linux/amd64")  JDK_ARCH=amd64  ;; \
+    "linux/arm64")  JDK_ARCH=arm64  ;; \
+    esac
+RUN export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-${JDK_ARCH}
+
 # install scala
 RUN wget https://downloads.lightbend.com/scala/2.12.3/scala-2.12.3.deb
 RUN dpkg -i scala-2.12.3.deb
-# Add Tini. Tini operates as a process subreaper for jupyter. This prevents kernel crashes.
-ENV TINI_VERSION v0.6.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
-RUN chmod +x /usr/bin/tini
+
 # install via conda
 COPY environment.yml environment.yml
 RUN conda init
 RUN conda env create -f environment.yml
 RUN echo "conda activate 5003-project" >> ~/.bashrc
 RUN conda activate 5003-project
+
 # jupyter notebook dir and config
 RUN mkdir /opt/notebooks
 COPY src/backend_api/jupyter_lab_config.py jupyter_lab_config.py

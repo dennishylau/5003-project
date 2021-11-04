@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: ./src/backend_api/Dockerfile-notebook
-    image: dennishylau/5003-project-notebook:0.0.1
+    image: dennishylau/5003-project-notebook:0.0.2
     depends_on:
       - db-timescale
       - spark-master
