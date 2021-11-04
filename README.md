@@ -57,13 +57,13 @@
    2. Access docs at `http://127.0.0.1:8000/latest/docs`
 3. Notebook
    1. Call `jupyter-lab --config=/jupyter_lab_config.py`
-   2. Access at `http://127.0.0.1:8888/`
+   2. Access at `http://127.0.0.1:9999/`
 
 ## Docker Compose
 
 - Running in local: `docker compose up`  
   - API Docs: [http://localhost:80/latest/docs](http://localhost:80/latest/docs)  
-  - Notebook: [http://localhost:8888/lab?token=5003-project](http://localhost:8888/lab?token=5003-project)  
+  - Notebook: [http://localhost:9999/lab?token=5003-project](http://localhost:9999/lab?token=5003-project)  
   - TimescaleDB: `localhost:5432`  
   - Spark master node (Pyspark endpoint): `localhost:7077`  
   - Spark master node (WebUI): [http://localhost:8080/](http://localhost:8080/)  

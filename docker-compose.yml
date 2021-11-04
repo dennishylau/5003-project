@@ -12,7 +12,7 @@ services:
       - spark-master
       - kafka-broker
     ports:
-      - "8888:8888"
+      - "9999:8888"
     environment:
       DB_HOST: db-timescale
       DB_PORT: ${DB_PORT}
