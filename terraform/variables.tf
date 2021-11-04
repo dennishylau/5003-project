@@ -8,7 +8,7 @@ variable "resource_group_location" {
   description = "Location of the resource group."
 }
 
-# credentials are loaded from terraform.tfvars.json
+# credentials: loaded from terraform.tfvars.json
 variable "db_pass" {
   type = string
 }
