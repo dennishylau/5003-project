@@ -17,4 +17,5 @@ dependencies:
   - sqlalchemy=1.4.26
   - pip:
     - aiokafka==0.7.2
+    - azure-eventhub==5.6.1
 prefix: /Users/user/opt/anaconda3/envs/5003-project
