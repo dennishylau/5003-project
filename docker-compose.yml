@@ -1,6 +1,19 @@
 version: '3.8'
 
 services:
+  ingestor:
+    container_name: ingestor
+    build:
+      context: .
+      dockerfile: ./src/data_ingestor/Dockerfile
+    image: thomastf/5003-project-ingestor:0.0.1
+    depends_on:
+      - kafka-broker
+    environment:
+      KAFKA_CONNECTION_STRING: ${KAFKA_CONNECTION_STRING}
+      KAFKA_TOPIC_NAME: ${KAFKA_TOPIC_NAME}
+    volumes:
+      - ./src/data_ingestor/data:/app/data
   notebook:
     container_name: notebook
     build:
