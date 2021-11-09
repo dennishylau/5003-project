@@ -6,13 +6,13 @@ services:
     build:
       context: .
       dockerfile: ./src/backend_api/Dockerfile-notebook
-    image: thomastf/5003-project-notebook:${version:-latest}
+    image: dennishylau/5003-project-notebook:0.0.2
     depends_on:
       - db-timescale
       - spark-master
       - kafka-broker
     ports:
-      - "8888:8888"
+      - "9999:8888"
     environment:
       DB_HOST: db-timescale
       DB_PORT: ${DB_PORT}
@@ -29,7 +29,7 @@ services:
     container_name: db-timescale
     build:
       context: ./src/db_timescale/
-    image: dennishylau/5003-project-db-timescale:${version:-latest}
+    image: dennishylau/5003-project-db-timescale:0.0.1
     restart: always
     ports:
       - "5432:5432"
@@ -42,7 +42,7 @@ services:
       - ./src/db_timescale/storage:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
-      interval: 15s
+      interval: 90s
       timeout: 30s
       retries: 5
   # spark
@@ -50,7 +50,7 @@ services:
     build:
       context: .
       dockerfile: ./src/backend_pipeline/spark/Dockerfile
-    image: thomastf/5003-project-spark:${version:-latest}
+    image: dennishylau/5003-project-spark:0.0.1
     container_name: spark-master
     ports:
       - "8080:8080"
@@ -82,7 +82,7 @@ services:
     build:
       context: .
       dockerfile: ./src/backend_pipeline/spark/Dockerfile
-    image: thomastf/5003-project-spark:${version:-latest}
+    image: dennishylau/5003-project-spark:0.0.1
     environment:
       SPARK_MODE: worker
       SPARK_MASTER_URL: spark://spark-master:7077
