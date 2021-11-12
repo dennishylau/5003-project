@@ -45,7 +45,7 @@ WORKDIR /app/
 
 COPY src/backend_api/app /app
 
-EXPOSE 9999
+EXPOSE 8888
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
 
