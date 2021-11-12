@@ -44,6 +44,10 @@
 3. Update `KAFKA_CONNECTION_STRING`, `KAFKA_TOPIC_NAME` and `ENV` in `.env` accordingly. If `ENV` not set of is `dev`, the ingestor will send messages to the local dockerized kafka broker. To send messages to eventhub, simply update `KAFKA_CONNECTION_STRING` and set `ENV` to `prod` 
 4. Run `docker compose up`
 
+(Optional)
+
+To push data into eventHub, simply set the environment variables `KAFKA_CONNECTION_STRING`, `KAFKA_TOPIC_NAME` and `ENV`. Then run `docker compose up ingestor`.
+
 ## Managing Conda Environment
 
 - Create conda environment with packages: `conda env create -f environment.yml`  
