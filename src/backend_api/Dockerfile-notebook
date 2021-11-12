@@ -39,7 +39,6 @@ COPY src/backend_api/jupyter_lab_config.py jupyter_lab_config.py
 
 # install drivers for pyspark
 RUN mkdir /opt/drivers
-RUN wget https://repo1.maven.org/maven2/org/apache/spark/spark-sql-kafka-0-10_2.12/3.1.1/spark-sql-kafka-0-10_2.12-3.1.1.jar -P /opt/drivers
 RUN wget https://repo1.maven.org/maven2/org/postgresql/postgresql/42.2.19/postgresql-42.2.19.jar -P /opt/drivers
 
 WORKDIR /app/

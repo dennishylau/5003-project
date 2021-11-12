@@ -5,11 +5,28 @@ import pandas as pd
 import time
 import logging
 
+KAFKA_CONNECTION_STRING = os.environ.get('KAFKA_CONNECTION_STRING', 'kafka-broker:9092')
+KAFKA_TOPIC_NAME = os.environ.get('KAFKA_TOPIC_NAME', 'us-election-tweet')
+SPEED_UP = os.environ.get('SPEED_UP', 1000)
+ENV = os.environ.get('ENV', 'dev')
+
+ENV = 'dev' if ENV == '' else ENV
+KAFKA_CONNECTION_STRING = 'kafka-broker:9092' if ENV == 'dev' else KAFKA_CONNECTION_STRING
+
 
 def main():
 
-    biden_data = pd.read_csv("./data/hashtag_joebiden.csv", lineterminator='\n')
-    trump_data = pd.read_csv("./data/hashtag_donaldtrump.csv", lineterminator='\n')
+    logging.info(f'Loaded environment variables:' +
+                 f'\nENV: {ENV}' +
+                 f'\nCONNECTION_STRING: {KAFKA_CONNECTION_STRING}' +
+                 f'\nEVENTHUB_NAME: {KAFKA_TOPIC_NAME}' +
+                 f'\nSPEED_UP: {SPEED_UP}')
+
+    data_dir = "./data"
+    biden_data = pd.read_csv(os.path.join(data_dir, "hashtag_joebiden.csv"), lineterminator='\n')
+    trump_data = pd.read_csv(os.path.join(data_dir, "hashtag_donaldtrump.csv"), lineterminator='\n')
+
+    logging.info(f'Loaded data from {data_dir}.')
 
     biden_data['person'] = 'biden'
     trump_data['person'] = 'trump'
@@ -18,45 +35,50 @@ def main():
     df['created_at'] = pd.to_datetime(df['created_at'], format='%Y-%m-%d %H:%M:%S')
     df.sort_values(by='created_at', inplace=True)
 
-    CONNECTION_STRING = os.environ.get('CONNECTION_STRING', 'localhost:9092')
-    EVENTHUB_NAME = os.environ.get('EVENTHUB_NAME', 'us-election-tweet')
-    SPEED_UP = os.environ.get('SPEED_UP', 1000)
+    df['time_to_sleep'] = df['created_at'].diff().apply(lambda x: x.seconds / SPEED_UP).fillna(0)
 
-    time_pointer = df.iloc[0]['created_at']
-    for i, row in df.iterrows():
-        time_to_sleep = time_pointer - row['created_at']
-        time.sleep(time_to_sleep.seconds / SPEED_UP)
-        time_pointer = row['created_at']
-        print(row['created_at'])
+    logging.info('Preprocessed data by combining.')
 
-    if CONNECTION_STRING.lower().startswith('endpoint'):
+    if (KAFKA_CONNECTION_STRING.lower().startswith('endpoint')) and (ENV == 'prod'):
+        # lazy import
         from azure.eventhub.aio import EventHubProducerClient
         from azure.eventhub import EventData
 
         async def run():
 
-            producer = EventHubProducerClient.from_connection_string(conn_str=CONNECTION_STRING, eventhub_name=EVENTHUB_NAME)
-            async with producer:
-                event_data_batch = await producer.create_batch()
-
-                json_data = json.dumps({"message": "Hello World 1"})
-                event_data_batch.add(EventData(json_data))
-
-                await producer.send_batch(event_data_batch)
+            client = EventHubProducerClient.from_connection_string(conn_str=KAFKA_CONNECTION_STRING,
+                                                                   eventhub_name=KAFKA_TOPIC_NAME)
+            async with client:
+                for _, row in df.iterrows():
+                    event_data_batch = await client.create_batch()
+                    event_data_batch.add(EventData(row.to_json()))
+                    await asyncio.sleep(row['time_to_sleep'])
+                    await client.send_batch(event_data_batch)
 
         loop = asyncio.get_event_loop()
         loop.run_until_complete(run())
 
     else:
+        # lazy import
         from kafka import KafkaProducer
-        producer = KafkaProducer(bootstrap_servers=[CONNECTION_STRING],
-                                 value_serializer=lambda x: json.dumps(x).encode('utf-8'))
+        from kafka.errors import NoBrokersAvailable
 
-        for _ in range(100):
+        # retry every 5 seconds to wait until broker is set up
+        while True:
+            try:
+                producer = KafkaProducer(bootstrap_servers=[KAFKA_CONNECTION_STRING],
+                                         value_serializer=lambda x: json.dumps(x).encode('utf-8'))
 
-            producer.send('fizzbuzz', {'foo': 'bar'})
+                for _, row in df.iterrows():
+                    time.sleep(row['time_to_sleep'])
+                    producer.send(KAFKA_TOPIC_NAME, row.to_json())
 
+                break
+            except NoBrokersAvailable:
+                time.sleep(5)
+                continue
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     main()

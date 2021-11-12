@@ -41,7 +41,7 @@
 1. Git clone and `cd 5003-project`.
 2. Duplicate `.env.example` and rename it to `.env`, update the credentials inside if needed  
 (Tip: if you can't find the file, try opening the folder with an IDE)
-3. Update KAFKA_CONNECTION_STRING and KAFKA_TOPIC_NAME in `.env`. 
+3. Update `KAFKA_CONNECTION_STRING`, `KAFKA_TOPIC_NAME` and `ENV` in `.env` accordingly. If `ENV` not set of is `dev`, the ingestor will send messages to the local dockerized kafka broker. To send messages to eventhub, simply update `KAFKA_CONNECTION_STRING` and set `ENV` to `prod` 
 4. Run `docker compose up`
 
 ## Managing Conda Environment

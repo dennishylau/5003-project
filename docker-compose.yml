@@ -6,10 +6,12 @@ services:
     build:
       context: .
       dockerfile: ./src/data_ingestor/Dockerfile
-    image: thomastf/5003-project-ingestor:0.0.1
+    image: thomastf/5003-project-ingestor:${version:-latest}
     depends_on:
+      - spark-master
       - kafka-broker
     environment:
+      ENV: ${ENV}
       KAFKA_CONNECTION_STRING: ${KAFKA_CONNECTION_STRING}
       KAFKA_TOPIC_NAME: ${KAFKA_TOPIC_NAME}
     volumes:
@@ -19,13 +21,13 @@ services:
     build:
       context: .
       dockerfile: ./src/backend_api/Dockerfile-notebook
-    image: dennishylau/5003-project-notebook:0.0.2
+    image: thomastf/5003-project-notebook:${version:-latest}
     depends_on:
       - db-timescale
       - spark-master
       - kafka-broker
     ports:
-      - "9999:8888"
+      - "8888:8888"
     environment:
       DB_HOST: db-timescale
       DB_PORT: ${DB_PORT}
@@ -33,6 +35,9 @@ services:
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASS}
       DB_POOL_SIZE: ${DB_POOL_SIZE}
+      ENV: ${ENV}
+      KAFKA_CONNECTION_STRING: ${KAFKA_CONNECTION_STRING}
+      KAFKA_TOPIC_NAME: ${KAFKA_TOPIC_NAME}
       PYTHONPATH: /app/
       PYSPARK_PYTHON: python3.9
       PYSPARK_DRIVER_PYTHON: python3.9
@@ -63,7 +68,7 @@ services:
     build:
       context: .
       dockerfile: ./src/backend_pipeline/spark/Dockerfile
-    image: dennishylau/5003-project-spark:0.0.1
+    image: thomastf/5003-project-spark:${version:-latest}
     container_name: spark-master
     ports:
       - "8080:8080"
@@ -95,7 +100,7 @@ services:
     build:
       context: .
       dockerfile: ./src/backend_pipeline/spark/Dockerfile
-    image: dennishylau/5003-project-spark:0.0.1
+    image: thomastf/5003-project-spark:${version:-latest}
     environment:
       SPARK_MODE: worker
       SPARK_MASTER_URL: spark://spark-master:7077
@@ -196,7 +201,7 @@ services:
         condition: service_healthy
     command: "bash -c 'echo Waiting for Kafka to be ready... && \
                        cub kafka-ready -b broker:9092 1 20 && \
-                       kafka-topics --create --topic us-election --bootstrap-server broker:9092 \
+                       kafka-topics --create --topic us-election-tweet --bootstrap-server broker:9092 \
                           --replication-factor 1 --partitions 1 -if-not-exists
                       '"
     environment:
