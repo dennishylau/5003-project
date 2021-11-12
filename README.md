@@ -64,7 +64,7 @@
 
 - Running in local: `docker compose up`  
   - API Docs: [http://localhost:80/latest/docs](http://localhost:80/latest/docs)  
-  - Notebook: [http://localhost:9999/lab?token=5003-project](http://localhost:9999/lab?token=5003-project)  
+  - Notebook: [http://localhost:8888/lab?token=5003-project](http://localhost:8888/lab?token=5003-project)  
   - TimescaleDB: `localhost:5432`  
   - Spark master node (Pyspark endpoint): `localhost:7077`  
   - Spark master node (WebUI): [http://localhost:8080/](http://localhost:8080/)  
