@@ -41,8 +41,12 @@
 1. Git clone and `cd 5003-project`.
 2. Duplicate `.env.example` and rename it to `.env`, update the credentials inside if needed  
 (Tip: if you can't find the file, try opening the folder with an IDE)
-3. [Optional] On Git, note the docker:x.x.x version number. Run `export version=x.x.x`.
+3. Update `KAFKA_CONNECTION_STRING`, `KAFKA_TOPIC_NAME` and `ENV` in `.env` accordingly. If `ENV` not set of is `dev`, the ingestor will send messages to the local dockerized kafka broker. To send messages to eventhub, simply update `KAFKA_CONNECTION_STRING` and set `ENV` to `prod` 
 4. Run `docker compose up`
+
+(Optional)
+
+To push data into eventHub, simply set the environment variables `KAFKA_CONNECTION_STRING`, `KAFKA_TOPIC_NAME` and `ENV`. Then run `docker compose up ingestor`.
 
 ## Managing Conda Environment
 
@@ -58,7 +62,7 @@
    2. Access docs at `http://127.0.0.1:8000/latest/docs`
 3. Notebook
    1. Call `jupyter-lab --config=/jupyter_lab_config.py`
-   2. Access at `http://127.0.0.1:8888/`
+   2. Access at `http://127.0.0.1:9999/`
 
 ## Docker Compose
 

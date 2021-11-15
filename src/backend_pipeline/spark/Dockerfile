@@ -7,7 +7,8 @@ ENV HOME="/" \
     OS_NAME="linux" \
     PATH="/opt/bitnami/python/bin:/opt/bitnami/java/bin:/opt/bitnami/spark/bin:/opt/bitnami/spark/sbin:/opt/bitnami/common/bin:$PATH"
 
-# SHELL ["/bin/bash", "-c"]
+ENV BASH_ENV ~/.bashrc
+SHELL ["/bin/bash", "-c"]
 
 COPY ./src/backend_pipeline/spark/prebuildfs /
 # Install required system packages and dependencies
@@ -35,8 +36,12 @@ COPY environment.yml environment.yml
 RUN /opt/bitnami/miniconda/bin/conda init bash
 RUN /opt/bitnami/miniconda/bin/conda env create -f environment.yml
 RUN echo "conda activate 5003-project" >> ~/.bashrc
+RUN conda activate 5003-project
+
+# install drivers for pyspark
+RUN wget https://repo1.maven.org/maven2/org/postgresql/postgresql/42.2.19/postgresql-42.2.19.jar -P /opt/bitnami/spark/jars
 
 WORKDIR /opt/bitnami/spark
 USER 1001
 ENTRYPOINT [ "/opt/bitnami/scripts/spark/entrypoint.sh" ]
-CMD [ "/opt/bitnami/scripts/spark/run.sh" ]
+CMD [ "/opt/bitnami/scripts/spark/run.sh"]

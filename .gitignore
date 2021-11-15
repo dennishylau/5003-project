@@ -17,6 +17,7 @@ src/db_timescale/storage/**
 # local stuff
 local*.ipynb
 .ipynb_checkpoints
+.local/**
 
 # large files
 notebook/data/hashtag_donaldtrump.csv
@@ -29,3 +30,7 @@ src/backend_pipeline/kafka/data/**
 # zookeeper
 src/backend_pipeline/zookeeper/storage/**
 !src/backend_pipeline/zookeeper/storage/README.md
+
+# terraform
+terraform/terraform.tfvars.json
+terraform/.terraform

@@ -1,12 +1,27 @@
 version: '3.8'
 
 services:
+  ingestor:
+    container_name: ingestor
+    build:
+      context: .
+      dockerfile: ./src/data_ingestor/Dockerfile
+    image: thomastf/5003-project-ingestor:${version:-latest}
+    depends_on:
+      - spark-master
+      - kafka-broker
+    environment:
+      ENV: ${ENV}
+      KAFKA_CONNECTION_STRING: ${KAFKA_CONNECTION_STRING}
+      KAFKA_TOPIC_NAME: ${KAFKA_TOPIC_NAME}
+    volumes:
+      - ./src/data_ingestor/data:/app/data
   notebook:
     container_name: notebook
     build:
       context: .
       dockerfile: ./src/backend_api/Dockerfile-notebook
-    image: dennishylau/5003-project-notebook:${version:-latest}
+    image: thomastf/5003-project-notebook:${version:-latest}
     depends_on:
       - db-timescale
       - spark-master
@@ -20,6 +35,9 @@ services:
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASS}
       DB_POOL_SIZE: ${DB_POOL_SIZE}
+      ENV: ${ENV}
+      KAFKA_CONNECTION_STRING: ${KAFKA_CONNECTION_STRING}
+      KAFKA_TOPIC_NAME: ${KAFKA_TOPIC_NAME}
       PYTHONPATH: /app/
       PYSPARK_PYTHON: python3.9
       PYSPARK_DRIVER_PYTHON: python3.9
@@ -29,7 +47,7 @@ services:
     container_name: db-timescale
     build:
       context: ./src/db_timescale/
-    image: dennishylau/5003-project-db-timescale:${version:-latest}
+    image: dennishylau/5003-project-db-timescale:0.0.1
     restart: always
     ports:
       - "5432:5432"
@@ -42,7 +60,7 @@ services:
       - ./src/db_timescale/storage:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
-      interval: 15s
+      interval: 90s
       timeout: 30s
       retries: 5
   # spark
@@ -50,7 +68,7 @@ services:
     build:
       context: .
       dockerfile: ./src/backend_pipeline/spark/Dockerfile
-    image: dennishylau/5003-project-spark:${version:-latest}
+    image: thomastf/5003-project-spark:${version:-latest}
     container_name: spark-master
     ports:
       - "8080:8080"
@@ -82,7 +100,7 @@ services:
     build:
       context: .
       dockerfile: ./src/backend_pipeline/spark/Dockerfile
-    image: dennishylau/5003-project-spark:${version:-latest}
+    image: thomastf/5003-project-spark:${version:-latest}
     environment:
       SPARK_MODE: worker
       SPARK_MASTER_URL: spark://spark-master:7077
@@ -183,7 +201,7 @@ services:
         condition: service_healthy
     command: "bash -c 'echo Waiting for Kafka to be ready... && \
                        cub kafka-ready -b broker:9092 1 20 && \
-                       kafka-topics --create --topic us-election --bootstrap-server broker:9092 \
+                       kafka-topics --create --topic us-election-tweet --bootstrap-server broker:9092 \
                           --replication-factor 1 --partitions 1 -if-not-exists
                       '"
     environment:
