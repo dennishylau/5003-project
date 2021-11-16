@@ -124,7 +124,7 @@ services:
     ports:
         - 3000:3000
     volumes:
-        - ./src/frontend/data:/var/lib/grafana
+        - ./src/frontend/data/dashboards:/var/lib/grafana/dashboards
         - ./src/frontend/config:/etc/grafana/
         - ./src/frontend/log:/var/log/grafana
         - ./src/frontend/provisioning:/etc/grafana/provisioning
@@ -142,6 +142,8 @@ services:
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASS}
+      # plugins
+      GF_INSTALL_PLUGINS: "grafana-singlestat-panel, grafana-worldmap-panel"
 
   # kafka
   kafka-zookeeper:
