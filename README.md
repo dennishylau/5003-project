@@ -43,7 +43,8 @@
 3. Update `KAFKA_CONNECTION_STRING`, `KAFKA_TOPIC_NAME` and `ENV` in `.env` accordingly.
    1. If `ENV` is not set or is `dev`, the ingestor will send messages to the local dockerized kafka broker.
    2. [Optional] To send messages to cloud endpoint (Azure Event Hubs), simply update `KAFKA_CONNECTION_STRING`, and set `ENV` to `prod`
-4. Run `docker compose up`
+4. Run `docker compose pull`
+5. Run `docker compose up`
 
 ## Managing Conda Environment
 
@@ -101,10 +102,6 @@ Example notebooks can be found in the `notebook` directory
 - Grafana provisioning: <https://grafana.com/tutorials/provision-dashboards-and-data-sources/>
 
 ## Troubleshoot
-
-- Question: Kafka starts up then shuts itself down. Error:  
-  ```kafka.common.InconsistentClusterIdException: The Cluster ID 5vrop5dzTsiNCFnHoSZ1TQ doesn't match stored clusterId Some(IFalA7xARAedQH2YNakCyg) in meta.properties. The broker is trying to join the wrong cluster. Configured zookeeper.connect may be wrong.```
-  - Answer: go to `src/backend_pipeline/kafka/data/meta.properties` and update the `cluster.id`
 
 - Question: TimescaleDB keeps complaining about `WARNING:  could not open statistics file "pg_stat_tmp/global.stat": Operation not permitted`
   - Answer: This is a known problem documented in Postgres' official docker hub page. In short, it does not affect operation, and can be safely ignored.
