@@ -14,8 +14,6 @@ services:
       ENV: ${ENV}
       KAFKA_CONNECTION_STRING: ${KAFKA_CONNECTION_STRING}
       KAFKA_TOPIC_NAME: ${KAFKA_TOPIC_NAME}
-    volumes:
-      - ./src/data_ingestor/data:/app/data
   notebook:
     container_name: notebook
     build:
