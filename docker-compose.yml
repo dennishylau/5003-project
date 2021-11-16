@@ -8,8 +8,10 @@ services:
       dockerfile: ./src/data_ingestor/Dockerfile
     image: thomastf/5003-project-ingestor:${version:-latest}
     depends_on:
-      - spark-master
-      - kafka-broker
+      spark-master:
+        condition: service_started
+      kafka-broker:
+        condition: service_healthy
     environment:
       ENV: ${ENV}
       KAFKA_CONNECTION_STRING: ${KAFKA_CONNECTION_STRING}
@@ -70,7 +72,6 @@ services:
     container_name: spark-master
     ports:
       - "8080:8080"
-      - "7077:7077"
     environment:
       HOSTNAME: spark-master
       SPARK_MODE: master
@@ -91,9 +92,6 @@ services:
       DB_POOL_SIZE: ${DB_POOL_SIZE}
     volumes:
       - ./notebook:/opt/notebooks
-    ports:
-      - '8080:8080'
-      - '7077:7077'
   spark-worker-1:
     build:
       context: .
@@ -114,6 +112,9 @@ services:
       DB_POOL_SIZE: ${DB_POOL_SIZE}
     volumes:
       - ./notebook:/opt/notebooks
+    depends_on:
+      spark-master:
+        condition: service_started
   # grafana
   frontend:
     container_name: frontend
@@ -196,7 +197,7 @@ services:
         condition: service_healthy
     command: "bash -c 'echo Waiting for Kafka to be ready... && \
                        cub kafka-ready -b broker:9092 1 20 && \
-                       kafka-topics --create --topic us-election-tweet --bootstrap-server broker:9092 \
+                       kafka-topics --create --topic ${KAFKA_TOPIC_NAME} --bootstrap-server broker:9092 \
                           --replication-factor 1 --partitions 1 -if-not-exists
                       '"
     environment:
