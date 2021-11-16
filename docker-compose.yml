@@ -155,8 +155,6 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-    volumes:
-      - ./src/backend_pipeline/zookeeper/storage:/var/lib/zookeeper/
     healthcheck:
       test: ["CMD", "bash", "-c", "echo srvr | nc localhost 2181 | grep Mode"]
       interval: 15s
@@ -181,9 +179,6 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-    volumes:
-      - ./src/backend_pipeline/kafka/conf:/etc/kafka
-      - ./src/backend_pipeline/kafka/data:/var/lib/kafka/data
     healthcheck:
       test: ["CMD", "kafka-topics", "--list", "--bootstrap-server", "broker:9092"]
       interval: 15s
