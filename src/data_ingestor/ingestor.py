@@ -6,7 +6,7 @@ import logging
 
 KAFKA_CONNECTION_STRING = os.environ.get('KAFKA_CONNECTION_STRING', 'kafka-broker:9092')
 KAFKA_TOPIC_NAME = os.environ.get('KAFKA_TOPIC_NAME', 'us-election-tweet')
-SPEED_UP = os.environ.get('SPEED_UP', 1000)
+SPEED_UP = int(os.environ.get('SPEED_UP', 1000))
 ENV = os.environ.get('ENV', 'dev')
 
 ENV = 'dev' if ENV == '' else ENV

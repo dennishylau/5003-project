@@ -8,9 +8,12 @@ services:
       dockerfile: ./src/pipeline/Dockerfile
     image: thomastf/5003-project-pipeline:${version:-latest}
     depends_on:
-      - db-timescale
-      - spark-master
-      - kafka-broker
+      spark-master:
+        condition: service_started
+      kafka-broker:
+        condition: service_healthy
+      db-timescale:
+        condition: service_started
     environment:
       DB_HOST: db-timescale
       DB_PORT: ${DB_PORT}
@@ -37,6 +40,7 @@ services:
         condition: service_healthy
     environment:
       ENV: ${ENV}
+      SPEED_UP: ${SPEED_UP}
       KAFKA_CONNECTION_STRING: ${KAFKA_CONNECTION_STRING}
       KAFKA_TOPIC_NAME: ${KAFKA_TOPIC_NAME}
   notebook:
