@@ -1,6 +1,29 @@
 version: '3.8'
 
 services:
+  pipeline:
+    container_name: pipeline
+    build:
+      context: .
+      dockerfile: ./src/pipeline/Dockerfile
+    image: thomastf/5003-project-pipeline:${version:-latest}
+    depends_on:
+      - db-timescale
+      - spark-master
+      - kafka-broker
+    environment:
+      DB_HOST: db-timescale
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_POOL_SIZE: ${DB_POOL_SIZE}
+      ENV: ${ENV}
+      KAFKA_CONNECTION_STRING: ${KAFKA_CONNECTION_STRING}
+      KAFKA_TOPIC_NAME: ${KAFKA_TOPIC_NAME}
+      PYTHONPATH: /app/
+      PYSPARK_PYTHON: python3.9
+      PYSPARK_DRIVER_PYTHON: python3.9
   ingestor:
     container_name: ingestor
     build:
