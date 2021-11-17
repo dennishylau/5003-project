@@ -8,14 +8,14 @@ services:
       dockerfile: ./src/data_ingestor/Dockerfile
     image: thomastf/5003-project-ingestor:${version:-latest}
     depends_on:
-      - spark-master
-      - kafka-broker
+      spark-master:
+        condition: service_started
+      kafka-broker:
+        condition: service_healthy
     environment:
       ENV: ${ENV}
       KAFKA_CONNECTION_STRING: ${KAFKA_CONNECTION_STRING}
       KAFKA_TOPIC_NAME: ${KAFKA_TOPIC_NAME}
-    volumes:
-      - ./src/data_ingestor/data:/app/data
   notebook:
     container_name: notebook
     build:
@@ -72,7 +72,6 @@ services:
     container_name: spark-master
     ports:
       - "8080:8080"
-      - "7077:7077"
     environment:
       HOSTNAME: spark-master
       SPARK_MODE: master
@@ -93,9 +92,6 @@ services:
       DB_POOL_SIZE: ${DB_POOL_SIZE}
     volumes:
       - ./notebook:/opt/notebooks
-    ports:
-      - '8080:8080'
-      - '7077:7077'
   spark-worker-1:
     build:
       context: .
@@ -116,6 +112,9 @@ services:
       DB_POOL_SIZE: ${DB_POOL_SIZE}
     volumes:
       - ./notebook:/opt/notebooks
+    depends_on:
+      spark-master:
+        condition: service_started
   # grafana
   frontend:
     container_name: frontend
@@ -126,7 +125,7 @@ services:
     ports:
         - 3000:3000
     volumes:
-        - ./src/frontend/data:/var/lib/grafana
+        - ./src/frontend/data/dashboards:/var/lib/grafana/dashboards
         - ./src/frontend/config:/etc/grafana/
         - ./src/frontend/log:/var/log/grafana
         - ./src/frontend/provisioning:/etc/grafana/provisioning
@@ -144,6 +143,8 @@ services:
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASS}
+      # plugins
+      GF_INSTALL_PLUGINS: "grafana-singlestat-panel, grafana-worldmap-panel"
 
   # kafka
   kafka-zookeeper:
@@ -155,8 +156,6 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-    volumes:
-      - ./src/backend_pipeline/zookeeper/storage:/var/lib/zookeeper/
     healthcheck:
       test: ["CMD", "bash", "-c", "echo srvr | nc localhost 2181 | grep Mode"]
       interval: 15s
@@ -181,9 +180,6 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-    volumes:
-      - ./src/backend_pipeline/kafka/conf:/etc/kafka
-      - ./src/backend_pipeline/kafka/data:/var/lib/kafka/data
     healthcheck:
       test: ["CMD", "kafka-topics", "--list", "--bootstrap-server", "broker:9092"]
       interval: 15s
@@ -201,7 +197,7 @@ services:
         condition: service_healthy
     command: "bash -c 'echo Waiting for Kafka to be ready... && \
                        cub kafka-ready -b broker:9092 1 20 && \
-                       kafka-topics --create --topic us-election-tweet --bootstrap-server broker:9092 \
+                       kafka-topics --create --topic ${KAFKA_TOPIC_NAME} --bootstrap-server broker:9092 \
                           --replication-factor 1 --partitions 1 -if-not-exists
                       '"
     environment:

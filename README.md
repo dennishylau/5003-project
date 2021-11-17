@@ -10,7 +10,6 @@
   - [Docker Compose](#docker-compose)
   - [Example Files](#example-files)
   - [Additional Setup](#additional-setup)
-    - [Git Hooks](#git-hooks)
     - [Pytest](#pytest)
   - [Credentials](#credentials)
     - [Notebook](#notebook)
@@ -41,12 +40,11 @@
 1. Git clone and `cd 5003-project`.
 2. Duplicate `.env.example` and rename it to `.env`, update the credentials inside if needed  
 (Tip: if you can't find the file, try opening the folder with an IDE)
-3. Update `KAFKA_CONNECTION_STRING`, `KAFKA_TOPIC_NAME` and `ENV` in `.env` accordingly. If `ENV` not set of is `dev`, the ingestor will send messages to the local dockerized kafka broker. To send messages to eventhub, simply update `KAFKA_CONNECTION_STRING` and set `ENV` to `prod` 
-4. Run `docker compose up`
-
-(Optional)
-
-To push data into eventHub, simply set the environment variables `KAFKA_CONNECTION_STRING`, `KAFKA_TOPIC_NAME` and `ENV`. Then run `docker compose up ingestor`.
+3. Update `KAFKA_CONNECTION_STRING`, `KAFKA_TOPIC_NAME` and `ENV` in `.env` accordingly.
+   1. If `ENV` is not set or is `dev`, the ingestor will send messages to the local dockerized kafka broker.
+   2. [Optional] To send messages to cloud endpoint (Azure Event Hubs), simply update `KAFKA_CONNECTION_STRING`, and set `ENV` to `prod`
+4. Run `docker compose pull`
+5. Run `docker compose up`
 
 ## Managing Conda Environment
 
@@ -83,13 +81,6 @@ Example notebooks can be found in the `notebook` directory
 
 ## Additional Setup
 
-### Git Hooks
-
-- Set this up so no need to manually run `conda env export` and `pip freeze`
-- Ensure `conda` is automatically sourced in `~/.bashrc`
-- Run `git config core.hooksPath githooks` to modify the default hooks directory
-- Run `chmod +x githooks/*` to make the scripts executable
-
 ### Pytest
 
 - Config at `setup.cfg`
@@ -112,5 +103,5 @@ Example notebooks can be found in the `notebook` directory
 
 ## Troubleshoot
 
-- Question: Kafka starts up then shuts itself down. Error: `kafka.common.InconsistentClusterIdException: The Cluster ID 5vrop5dzTsiNCFnHoSZ1TQ doesn't match stored clusterId Some(IFalA7xARAedQH2YNakCyg) in meta.properties. The broker is trying to join the wrong cluster. Configured zookeeper.connect may be wrong.`
-  - Answer: go to `src/backend_pipeline/kafka/data/meta.properties` and update the `cluster.id`
+- Question: TimescaleDB keeps complaining about `WARNING:  could not open statistics file "pg_stat_tmp/global.stat": Operation not permitted`
+  - Answer: This is a known problem documented in Postgres' official docker hub page. In short, it does not affect operation, and can be safely ignored.
