@@ -1,6 +1,5 @@
 import os
 
-from pyspark import SparkConf
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, TimestampType, StringType, DoubleType, LongType
 from pyspark.sql.functions import udf, from_json, col, from_unixtime
@@ -59,19 +58,15 @@ def timescale_sink(df, batch_id):
 
 def main():
 
-    conf = SparkConf()
-    conf.set('spark.logConf', 'true')
-
     spark = (
         SparkSession.builder
-        .config(conf=conf)
         .appName('5003-project')
         .master('spark://spark-master:7077')
         .enableHiveSupport()
         .getOrCreate()
     )
 
-    spark.sparkContext.setLogLevel('WARN')
+    spark.sparkContext.setLogLevel('ERROR')
 
     udf_get_polarity = udf(get_polarity, DoubleType())
 
