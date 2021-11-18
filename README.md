@@ -44,7 +44,8 @@
    1. If `ENV` is not set or is `dev`, the ingestor will send messages to the local dockerized kafka broker.
    2. [Optional] To send messages to cloud endpoint (Azure Event Hubs), simply update `KAFKA_CONNECTION_STRING`, and set `ENV` to `prod`
 4. Run `docker compose pull`
-5. Run `docker compose up`
+5. Run `docker compose up` to start services.
+6. Run `docker compose down` to stop the services.
 
 ## Managing Conda Environment
 
