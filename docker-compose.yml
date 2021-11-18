@@ -14,6 +14,8 @@ services:
         condition: service_healthy
       db-timescale:
         condition: service_started
+      spark-worker-1:
+        condition: service_started
     environment:
       DB_HOST: db-timescale
       DB_PORT: ${DB_PORT}
