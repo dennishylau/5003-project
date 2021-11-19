@@ -8,14 +8,12 @@ services:
       dockerfile: ./src/pipeline/Dockerfile
     image: thomastf/5003-project-pipeline:${version:-latest}
     depends_on:
-      spark-master:
-        condition: service_started
       kafka-broker:
         condition: service_healthy
       db-timescale:
         condition: service_healthy
       spark-worker-1:
-        condition: service_started
+        condition: service_healthy
     environment:
       DB_HOST: db-timescale
       DB_PORT: ${DB_PORT}
@@ -36,10 +34,7 @@ services:
       dockerfile: ./src/data_ingestor/Dockerfile
     image: thomastf/5003-project-ingestor:${version:-latest}
     depends_on:
-      spark-master:
-        condition: service_started
-      kafka-broker:
-        condition: service_healthy
+      - pipeline
     environment:
       ENV: ${ENV}
       SPEED_UP: ${SPEED_UP}
@@ -52,9 +47,7 @@ services:
       dockerfile: ./src/backend_api/Dockerfile-notebook
     image: thomastf/5003-project-notebook:${version:-latest}
     depends_on:
-      - db-timescale
-      - spark-master
-      - kafka-broker
+      - ingestor
     ports:
       - "8888:8888"
     environment:
@@ -97,7 +90,7 @@ services:
     build:
       context: .
       dockerfile: ./src/backend_pipeline/spark/Dockerfile
-    image: thomastf/5003-project-spark:${version:-latest}
+    image: dennishylau/5003-project-spark:0.0.2
     container_name: spark-master
     ports:
       - "8080:8080"
@@ -121,11 +114,16 @@ services:
       DB_POOL_SIZE: ${DB_POOL_SIZE}
     volumes:
       - ./notebook:/opt/notebooks
+    healthcheck:
+      test: ["CMD", "bash", "-c", "netstat -ltn | grep -c 8080"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
   spark-worker-1:
     build:
       context: .
       dockerfile: ./src/backend_pipeline/spark/Dockerfile
-    image: thomastf/5003-project-spark:${version:-latest}
+    image: dennishylau/5003-project-spark:0.0.2
     environment:
       SPARK_MODE: worker
       SPARK_MASTER_URL: spark://spark-master:7077
@@ -143,7 +141,12 @@ services:
       - ./notebook:/opt/notebooks
     depends_on:
       spark-master:
-        condition: service_started
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "bash", "-c", "netstat -ltn | cut -c21-44 | grep -c 0.0.0.0"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
   # grafana
   frontend:
     container_name: frontend

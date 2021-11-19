@@ -41,6 +41,10 @@ RUN conda activate 5003-project
 # install drivers for pyspark
 RUN wget https://repo1.maven.org/maven2/org/postgresql/postgresql/42.2.19/postgresql-42.2.19.jar -P /opt/bitnami/spark/jars
 
+# install netcat for health check
+RUN apt-get update
+RUN apt install net-tools
+
 WORKDIR /opt/bitnami/spark
 USER 1001
 ENTRYPOINT [ "/opt/bitnami/scripts/spark/entrypoint.sh" ]
