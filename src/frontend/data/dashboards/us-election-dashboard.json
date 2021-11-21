@@ -107,7 +107,7 @@
           ],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(created_at,1h),\n  max(score) as \"sentiment score\"\nFROM donaldtrump_tweets\nWHERE\n  $__timeFilter(created_at)\nGROUP BY 1\nORDER BY 1",
+          "rawSql": "SELECT\n  $__timeGroupAlias(created_at,1m),\n  max(score) as \"sentiment score\"\nFROM donaldtrump_tweets\nWHERE\n  $__timeFilter(created_at)\nGROUP BY 1\nORDER BY 1",
           "refId": "A",
           "select": [
             [
@@ -329,7 +329,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(created_at,'1h'),\n  avg(score) AS \"sentiment score\"\nFROM joebiden_tweets\nWHERE\n  $__timeFilter(created_at)\nGROUP BY 1\nORDER BY 1",
+          "rawSql": "SELECT\n  $__timeGroupAlias(created_at,'1d'),\n  avg(score) AS \"sentiment score\"\nFROM joebiden_tweets\nWHERE\n  $__timeFilter(created_at)\nGROUP BY 1\nORDER BY 1",
           "refId": "A",
           "select": [
             [
@@ -412,7 +412,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(created_at,1h),\n  avg(score) AS \"sentiment score\"\nFROM donaldtrump_tweets\nWHERE\n  $__timeFilter(created_at)\nGROUP BY 1\nORDER BY 1",
+          "rawSql": "SELECT\n  $__timeGroupAlias(created_at, '1d'),\n  avg(score) AS \"sentiment score\"\nFROM donaldtrump_tweets\nWHERE\n  $__timeFilter(created_at)\nGROUP BY 1\nORDER BY 1",
           "refId": "A",
           "select": [
             [
@@ -659,7 +659,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(joebiden_tweets.created_at,12h),\n  avg(joebiden_tweets.score) AS \"Biden sentiment score\"\nFROM joebiden_tweets\nWHERE\n  $__timeFilter(joebiden_tweets.created_at)\nGROUP BY 1\nORDER BY 1;\n",
+          "rawSql": "SELECT\n  $__timeGroupAlias(joebiden_tweets.created_at,'1d'),\n  avg(joebiden_tweets.score) AS \"Biden sentiment score\"\nFROM joebiden_tweets\nWHERE\n  $__timeFilter(joebiden_tweets.created_at)\nGROUP BY 1\nORDER BY 1;\n",
           "refId": "A",
           "select": [
             [
@@ -688,7 +688,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(created_at,12h),\n  avg(score) AS \"Trump sentiment score\"\nFROM donaldtrump_tweets\nWHERE\n  $__timeFilter(created_at)\nGROUP BY 1\nORDER BY 1;",
+          "rawSql": "SELECT\n  $__timeGroupAlias(created_at,'1d'),\n  avg(score) AS \"Trump sentiment score\"\nFROM donaldtrump_tweets\nWHERE\n  $__timeFilter(created_at)\nGROUP BY 1\nORDER BY 1;",
           "refId": "B",
           "select": [
             [
@@ -1427,5 +1427,5 @@
   "timezone": "America/New_York",
   "title": "2020 US Election real-time sentiment analysis",
   "uid": "kGF1Zmcnk",
-  "version": 8
+  "version": 1
 }
