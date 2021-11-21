@@ -176,7 +176,7 @@ services:
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASS}
       # plugins
-      GF_INSTALL_PLUGINS: "grafana-singlestat-panel, grafana-worldmap-panel"
+      GF_INSTALL_PLUGINS: "grafana-singlestat-panel, grafana-worldmap-panel, ae3e-plotly-panel"
 
   # kafka
   kafka-zookeeper:
