@@ -179,7 +179,7 @@
         "layout": {
           "autosize": true,
           "geo": {
-            "bgcolor": "rgba(0,0,0,0)",
+            "bgcolor": "rgba(0, 0, 0, 0)",
             "countrycolor": "rgb(255, 255, 255)",
             "lakecolor": "rgb(255, 255, 255)",
             "landcolor": "rgb(217, 217, 217)",
@@ -283,8 +283,8 @@
           "decimals": 0,
           "displayName": "Daily Biden Sentiment Score",
           "mappings": [],
-          "max": 100,
-          "min": -100,
+          "max": 1,
+          "min": -1,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -366,8 +366,8 @@
           "decimals": 0,
           "displayName": "Daily Trump Sentiment Score",
           "mappings": [],
-          "max": 100,
-          "min": -100,
+          "max": 1,
+          "min": -1,
           "thresholds": {
             "mode": "absolute",
             "steps": [
