@@ -1,45 +1,45 @@
 version: '3.8'
 
 services:
-  pipeline:
-    container_name: pipeline
-    build:
-      context: .
-      dockerfile: ./src/pipeline/Dockerfile
-    image: thomastf/5003-project-pipeline:${version:-latest}
-    depends_on:
-      kafka-broker:
-        condition: service_healthy
-      db-timescale:
-        condition: service_healthy
-      spark-worker-1:
-        condition: service_healthy
-    environment:
-      DB_HOST: db-timescale
-      DB_PORT: ${DB_PORT}
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-      DB_PASS: ${DB_PASS}
-      DB_POOL_SIZE: ${DB_POOL_SIZE}
-      ENV: ${ENV}
-      KAFKA_CONNECTION_STRING: ${KAFKA_CONNECTION_STRING}
-      KAFKA_TOPIC_NAME: ${KAFKA_TOPIC_NAME}
-      PYTHONPATH: /app/
-      PYSPARK_PYTHON: python3.9
-      PYSPARK_DRIVER_PYTHON: python3.9
-  ingestor:
-    container_name: ingestor
-    build:
-      context: .
-      dockerfile: ./src/data_ingestor/Dockerfile
-    image: thomastf/5003-project-ingestor:${version:-latest}
-    depends_on:
-      - pipeline
-    environment:
-      ENV: ${ENV}
-      SPEED_UP: ${SPEED_UP}
-      KAFKA_CONNECTION_STRING: ${KAFKA_CONNECTION_STRING}
-      KAFKA_TOPIC_NAME: ${KAFKA_TOPIC_NAME}
+#  pipeline:
+#    container_name: pipeline
+#    build:
+#      context: .
+#      dockerfile: ./src/pipeline/Dockerfile
+#    image: thomastf/5003-project-pipeline:${version:-latest}
+#    depends_on:
+#      kafka-broker:
+#        condition: service_healthy
+#      db-timescale:
+#        condition: service_healthy
+#      spark-worker-1:
+#        condition: service_healthy
+#    environment:
+#      DB_HOST: db-timescale
+#      DB_PORT: ${DB_PORT}
+#      DB_NAME: ${DB_NAME}
+#      DB_USER: ${DB_USER}
+#      DB_PASS: ${DB_PASS}
+#      DB_POOL_SIZE: ${DB_POOL_SIZE}
+#      ENV: ${ENV}
+#      KAFKA_CONNECTION_STRING: ${KAFKA_CONNECTION_STRING}
+#      KAFKA_TOPIC_NAME: ${KAFKA_TOPIC_NAME}
+#      PYTHONPATH: /app/
+#      PYSPARK_PYTHON: python3.9
+#      PYSPARK_DRIVER_PYTHON: python3.9
+#  ingestor:
+#    container_name: ingestor
+#    build:
+#      context: .
+#      dockerfile: ./src/data_ingestor/Dockerfile
+#    image: thomastf/5003-project-ingestor:${version:-latest}
+#    depends_on:
+#      - pipeline
+#    environment:
+#      ENV: ${ENV}
+#      SPEED_UP: ${SPEED_UP}
+#      KAFKA_CONNECTION_STRING: ${KAFKA_CONNECTION_STRING}
+#      KAFKA_TOPIC_NAME: ${KAFKA_TOPIC_NAME}
   notebook:
     container_name: notebook
     build:
@@ -47,7 +47,10 @@ services:
       dockerfile: ./src/backend_api/Dockerfile-notebook
     image: thomastf/5003-project-notebook:${version:-latest}
     depends_on:
-      - ingestor
+      - spark-master
+      - spark-worker-1
+#    depends_on:
+#      - ingestor
     ports:
       - "8888:8888"
     environment:
@@ -65,26 +68,26 @@ services:
       PYSPARK_DRIVER_PYTHON: python3.9
     volumes:
       - ./notebook:/opt/notebooks
-  db-timescale:
-    container_name: db-timescale
-    build:
-      context: ./src/db_timescale/
-    image: dennishylau/5003-project-db-timescale:0.0.1
-    restart: always
-    ports:
-      - "5432:5432"
-    environment:
-      PGUSER: ${DB_USER}  # for health check
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASS}
-      POSTGRES_DB: ${DB_NAME}
-    volumes:
-      - ./src/db_timescale/storage:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
-      interval: 90s
-      timeout: 30s
-      retries: 5
+#  db-timescale:
+#    container_name: db-timescale
+#    build:
+#      context: ./src/db_timescale/
+#    image: dennishylau/5003-project-db-timescale:0.0.1
+#    restart: always
+#    ports:
+#      - "5432:5432"
+#    environment:
+#      PGUSER: ${DB_USER}  # for health check
+#      POSTGRES_USER: ${DB_USER}
+#      POSTGRES_PASSWORD: ${DB_PASS}
+#      POSTGRES_DB: ${DB_NAME}
+#    volumes:
+#      - ./src/db_timescale/storage:/var/lib/postgresql/data
+#    healthcheck:
+#      test: ["CMD-SHELL", "pg_isready"]
+#      interval: 90s
+#      timeout: 30s
+#      retries: 5
   # spark
   spark-master:
     build:
@@ -148,93 +151,93 @@ services:
       timeout: 5s
       retries: 10
   # grafana
-  frontend:
-    container_name: frontend
-    image: grafana/grafana:latest
-    depends_on:
-      db-timescale:
-        condition: service_healthy
-    ports:
-        - 3000:3000
-    volumes:
-        - ./src/frontend/data/dashboards:/var/lib/grafana/dashboards
-        - ./src/frontend/config:/etc/grafana/
-        - ./src/frontend/log:/var/log/grafana
-        - ./src/frontend/provisioning:/etc/grafana/provisioning
-    environment:
-      # grafana internal vars
-      GF_DATABASE_TYPE: postgres
-      GF_DATABASE_HOST: db-timescale:${DB_PORT}
-      GF_DATABASE_NAME: ${DB_NAME}
-      GF_DATABASE_USER: ${DB_USER}
-      GF_DATABASE_PASSWORD: ${DB_PASS}
-      GF_DATABASE_SSL_MODE: disable
-      #datasource vars
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-      DB_PASS: ${DB_PASS}
-      # plugins
-      GF_INSTALL_PLUGINS: "grafana-singlestat-panel, grafana-worldmap-panel, ae3e-plotly-panel"
-
-  # kafka
-  kafka-zookeeper:
-    image: confluentinc/cp-zookeeper:6.2.1
-    hostname: zookeeper
-    container_name: kafka-zookeeper
-    ports:
-      - "2181:2181"
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    healthcheck:
-      test: ["CMD", "bash", "-c", "echo srvr | nc localhost 2181 | grep Mode"]
-      interval: 15s
-      timeout: 30s
-      retries: 5
-
-  kafka-broker:
-    image: confluentinc/cp-kafka:6.2.1
-    hostname: broker
-    container_name: kafka-broker
-    depends_on:
-      kafka-zookeeper:
-        condition: service_healthy
-    ports:
-      - "29092:29092"
-      - "9092:9092"
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,PLAINTEXT_HOST://localhost:29092
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-    healthcheck:
-      test: ["CMD", "kafka-topics", "--list", "--bootstrap-server", "broker:9092"]
-      interval: 15s
-      timeout: 30s
-      retries: 5
-
-  kafka-setup:
-    # A workaround used to set up topic.
-    # Example: https://github.com/confluentinc/examples/blob/5.1.1-post/microservices-orders/docker-compose.yml#L182-L215
-    image: confluentinc/cp-kafka:6.2.1
-    hostname: kafka-setup
-    container_name: kafka-setup
-    depends_on:
-      kafka-broker:
-        condition: service_healthy
-    command: "bash -c 'echo Waiting for Kafka to be ready... && \
-                       cub kafka-ready -b broker:9092 1 20 && \
-                       kafka-topics --create --topic ${KAFKA_TOPIC_NAME} --bootstrap-server broker:9092 \
-                          --replication-factor 1 --partitions 1 -if-not-exists
-                      '"
-    environment:
-      # The following settings are listed here only to satisfy the image's requirements.
-      # We override the image's `command` anyways, hence this container will not start a broker.
-      KAFKA_BROKER_ID: 99999
-      KAFKA_ZOOKEEPER_CONNECT: ignored
+#  frontend:
+#    container_name: frontend
+#    image: grafana/grafana:latest
+#    depends_on:
+#      db-timescale:
+#        condition: service_healthy
+#    ports:
+#        - 3000:3000
+#    volumes:
+#        - ./src/frontend/data/dashboards:/var/lib/grafana/dashboards
+#        - ./src/frontend/config:/etc/grafana/
+#        - ./src/frontend/log:/var/log/grafana
+#        - ./src/frontend/provisioning:/etc/grafana/provisioning
+#    environment:
+#      # grafana internal vars
+#      GF_DATABASE_TYPE: postgres
+#      GF_DATABASE_HOST: db-timescale:${DB_PORT}
+#      GF_DATABASE_NAME: ${DB_NAME}
+#      GF_DATABASE_USER: ${DB_USER}
+#      GF_DATABASE_PASSWORD: ${DB_PASS}
+#      GF_DATABASE_SSL_MODE: disable
+#      #datasource vars
+#      DB_HOST: ${DB_HOST}
+#      DB_PORT: ${DB_PORT}
+#      DB_NAME: ${DB_NAME}
+#      DB_USER: ${DB_USER}
+#      DB_PASS: ${DB_PASS}
+#      # plugins
+#      GF_INSTALL_PLUGINS: "grafana-singlestat-panel, grafana-worldmap-panel, ae3e-plotly-panel"
+#
+#  # kafka
+#  kafka-zookeeper:
+#    image: confluentinc/cp-zookeeper:6.2.1
+#    hostname: zookeeper
+#    container_name: kafka-zookeeper
+#    ports:
+#      - "2181:2181"
+#    environment:
+#      ZOOKEEPER_CLIENT_PORT: 2181
+#      ZOOKEEPER_TICK_TIME: 2000
+#    healthcheck:
+#      test: ["CMD", "bash", "-c", "echo srvr | nc localhost 2181 | grep Mode"]
+#      interval: 15s
+#      timeout: 30s
+#      retries: 5
+#
+#  kafka-broker:
+#    image: confluentinc/cp-kafka:6.2.1
+#    hostname: broker
+#    container_name: kafka-broker
+#    depends_on:
+#      kafka-zookeeper:
+#        condition: service_healthy
+#    ports:
+#      - "29092:29092"
+#      - "9092:9092"
+#    environment:
+#      KAFKA_BROKER_ID: 1
+#      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,PLAINTEXT_HOST://localhost:29092
+#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+#      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+#      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+#      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+#    healthcheck:
+#      test: ["CMD", "kafka-topics", "--list", "--bootstrap-server", "broker:9092"]
+#      interval: 15s
+#      timeout: 30s
+#      retries: 5
+#
+#  kafka-setup:
+#    # A workaround used to set up topic.
+#    # Example: https://github.com/confluentinc/examples/blob/5.1.1-post/microservices-orders/docker-compose.yml#L182-L215
+#    image: confluentinc/cp-kafka:6.2.1
+#    hostname: kafka-setup
+#    container_name: kafka-setup
+#    depends_on:
+#      kafka-broker:
+#        condition: service_healthy
+#    command: "bash -c 'echo Waiting for Kafka to be ready... && \
+#                       cub kafka-ready -b broker:9092 1 20 && \
+#                       kafka-topics --create --topic ${KAFKA_TOPIC_NAME} --bootstrap-server broker:9092 \
+#                          --replication-factor 1 --partitions 1 -if-not-exists
+#                      '"
+#    environment:
+#      # The following settings are listed here only to satisfy the image's requirements.
+#      # We override the image's `command` anyways, hence this container will not start a broker.
+#      KAFKA_BROKER_ID: 99999
+#      KAFKA_ZOOKEEPER_CONNECT: ignored
